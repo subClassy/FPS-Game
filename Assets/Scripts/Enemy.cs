@@ -8,8 +8,15 @@ public class Enemy : MonoBehaviour
     public Animator animator;
     public GameObject[] target;
     public GameObject player;
+    public GameObject muzzleFlash;
+    public GameObject shotSound;
+    public GameObject start;
+    public GameObject end;
+    public GameObject bulletHole;
     private int targetIndex = 0;
     private bool isPlayerDetected = false;
+    private float gunShotTime = 0.2f;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -19,6 +26,11 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (gunShotTime >= 0.0f)
+        {
+            gunShotTime -= Time.deltaTime;
+        }
+
         var playerPosition = player.transform.position;
         var myPosition = transform.position;
         
@@ -39,12 +51,19 @@ public class Enemy : MonoBehaviour
         {
             var movePosition = new Vector3(playerPosition.x, myPosition.y, playerPosition.z);
             var desiredRotation = Quaternion.LookRotation(movePosition - myPosition);
-            transform.rotation = Quaternion.Lerp(transform.rotation, desiredRotation, Time.deltaTime);
+            transform.rotation = Quaternion.Lerp(transform.rotation, desiredRotation, Time.deltaTime * 6.0f);
             
             if (d2Player <= 10.0f) 
             {
+                if (gunShotTime <= 0) 
+                {
+                    AddEffects();
+                    ShotDetection();
+                    GetComponent<Animator>().SetBool("shoot", true);
+                    gunShotTime = 0.4f;
+                }
+    
                 GetComponent<Animator>().SetBool("run", false);
-                GetComponent<Animator>().SetBool("shoot", true);
             }
             else
             {
@@ -67,9 +86,33 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    // void DetectPlayer()
-    // {
-    //     var dist_player = Vector3.Distance(transfor.position - player.tranform.position);
-    //     angle_with_player = Vector3.Angle(player_direction, transform.forward);
-    // }
+    void AddEffects()
+    {
+        GameObject muzzleFlashObject = Instantiate(muzzleFlash, end.transform.position, end.transform.rotation);
+        muzzleFlashObject.GetComponent<ParticleSystem>().Play();
+        Destroy(muzzleFlashObject, 1.0f);
+
+        Destroy(Instantiate(shotSound, transform.position, transform.rotation), 1.0f);
+    }
+
+    void ShotDetection()
+    {
+        RaycastHit rayHit;
+        var rifleEnd = end.transform.position + (end.transform.up * UnityEngine.Random.Range(-0.2f, 0.2f)) + (end.transform.right * UnityEngine.Random.Range(-0.2f, 0.2f));
+
+        if (Physics.Raycast(rifleEnd, (rifleEnd - start.transform.position).normalized, out rayHit, 100.0f))
+        {
+            if(rayHit.transform.tag == "Player")
+            {
+                player.GetComponent<Gun>().Being_shot(20.0f);
+                // rayHit.transform.GetComponent<Gun>().Being_shot(20);
+            }
+            else
+            {
+                GameObject bulletHoleObject = Instantiate(bulletHole, rayHit.point + rayHit.collider.transform.up * 0.01f, rayHit.collider.transform.rotation);
+                Destroy(bulletHoleObject, 2.0f);
+            }
+            
+        }
+    }
 }

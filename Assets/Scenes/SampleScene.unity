@@ -4779,6 +4779,14 @@ MonoBehaviour:
   - {fileID: 853817043}
   - {fileID: 839022910}
   player: {fileID: 8296172667830012321}
+  muzzleFlash: {fileID: 1000010254994808, guid: 9defeac88977c0d448aa4541073ee9e4,
+    type: 3}
+  shotSound: {fileID: 7613510872191203971, guid: 1e22374e7a4d07f42b228032179573a2,
+    type: 3}
+  start: {fileID: 1390773776}
+  end: {fileID: 471978579}
+  bulletHole: {fileID: 1039642720941500333, guid: 9adc8ea3228d61f4bac4b3d21a0d5ce9,
+    type: 3}
 --- !u!1 &1798060230
 GameObject:
   m_ObjectHideFlags: 0

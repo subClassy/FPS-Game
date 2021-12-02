@@ -98,7 +98,22 @@ public class Gun : MonoBehaviour {
 
     public void Being_shot(float damage) // getting hit from enemy
     {
+        health -= damage;
         
+        if (health <= 0)
+        {
+            isDead = true;
+        }
+
+        if (isDead == true)
+        {
+            GetComponent<Animator>().SetBool("dead", true);
+            // GetComponent<CharacterMovement>().isDead = true;
+            // GetComponent<CharacterController>().enabled = false;
+            //gameObject.transform.Find("Soldier_head").GetComponent<SkinnedMeshRenderer>().enabled = true;
+            headMesh.GetComponent<SkinnedMeshRenderer>().enabled = true;
+            Debug.Log("Game over");
+        }
     }
 
     public void ReloadEvent(int eventNumber) // appearing and disappearing the handMag and gunMag
