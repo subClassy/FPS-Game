@@ -19,6 +19,10 @@ public class Gun : MonoBehaviour {
     float gunReloadTime = 1.0f;
     Quaternion previousRotation;
     public float health = 100;
+    public float initialHealth = 100;
+
+    public Text currentHealth;
+    public Text maxHealth;
     public bool isDead;
  
 
@@ -91,6 +95,7 @@ public class Gun : MonoBehaviour {
         }
 
         updateText();
+        updateHealthText();
        
     }
 
@@ -111,7 +116,6 @@ public class Gun : MonoBehaviour {
             GetComponent<CharacterMovement>().isDead = true;
             GetComponent<CharacterController>().enabled = false;
             headMesh.GetComponent<SkinnedMeshRenderer>().enabled = true;
-            Debug.Log("Game over");
         }
     }
 
@@ -145,30 +149,37 @@ public class Gun : MonoBehaviour {
         remainingBullets.text = remainingBulletsVal.ToString();
     }
 
+    void updateHealthText()
+    {
+        maxHealth.text = initialHealth.ToString();
+        currentHealth.text = health.ToString();
+    }
+
     void shotDetection() // Detecting the object which player shot 
     {
         RaycastHit rayHit;
-        int layerMask = 1<<8;
-        layerMask = ~layerMask; 
         
-        if (Physics.Raycast(end.transform.position, (end.transform.position - start.transform.position).normalized, out rayHit, 100.0f, layerMask))
+        if (Physics.Raycast(end.transform.position, (end.transform.position - start.transform.position).normalized, out rayHit, 100.0f))
         {
-            GameObject bulletHoleObject = Instantiate(bulletHole, rayHit.point + rayHit.collider.transform.up * 0.01f, rayHit.collider.transform.rotation);
-            Destroy(bulletHoleObject, 2.0f);
+            if (rayHit.collider.tag == "Player")
+            {
+                rayHit.transform.gameObject.GetComponent<Enemy>().Being_shot(20.0f);
+            }
+            else
+            {
+                GameObject bulletHoleObject = Instantiate(bulletHole, rayHit.point + rayHit.collider.transform.up * 0.01f, rayHit.collider.transform.rotation);
+                Destroy(bulletHoleObject, 2.0f);
+            }
         }
+    }
 
+    void addEffects() // Adding muzzle flash, shoot sound and bullet hole on the wall
+    {
         GameObject muzzleFlashObject = Instantiate(muzzleFlash, end.transform.position, end.transform.rotation);
         muzzleFlashObject.GetComponent<ParticleSystem>().Play();
         Destroy(muzzleFlashObject, 1.0f);
 
         Destroy(Instantiate(shotSound, transform.position, transform.rotation), 1.0f);
-
-        // print(rayHit.collider.tag);
-    }
-
-    void addEffects() // Adding muzzle flash, shoot sound and bullet hole on the wall
-    {
-
     }
 
 }

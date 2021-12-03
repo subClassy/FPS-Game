@@ -13,9 +13,12 @@ public class Enemy : MonoBehaviour
     public GameObject start;
     public GameObject end;
     public GameObject bulletHole;
+    public GameObject gun;
     private int targetIndex = 0;
     private bool isPlayerDetected = false;
     private float gunShotTime = 0.2f;
+    private float health = 100;
+    private bool isDead = false;
     
     // Start is called before the first frame update
     void Start()
@@ -26,64 +29,67 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        var isGameOver = player.GetComponent<Gun>().isDead == true;
-        if (isGameOver) 
+        if (!isDead) 
         {
-            GetComponent<Animator>().SetBool("over", true);
-        }
-
-        if (gunShotTime >= 0.0f)
-        {
-            gunShotTime -= Time.deltaTime;
-        }
-
-        var playerPosition = player.transform.position;
-        var myPosition = transform.position;
-        
-        var d2Player = Vector3.Distance(playerPosition, myPosition);
-        var playerDirection = new Vector3((playerPosition.x - myPosition.x), (playerPosition.y - myPosition.y), (playerPosition.z - myPosition.z)).normalized;
-        var angleWithPlayer = Vector3.Angle(playerDirection, transform.forward);
-        
-        if (isPlayerDetected == false)
-        {
-            MoveOnPath(myPosition);
-        }
-
-        if (isPlayerDetected == false && d2Player < 15.0f && Math.Abs(angleWithPlayer) < 40.0f) {
-            isPlayerDetected = true;
-        }
-
-        if (isPlayerDetected && !isGameOver) 
-        {
-            var movePosition = new Vector3(playerPosition.x, myPosition.y, playerPosition.z);
-            var desiredRotation = Quaternion.LookRotation(movePosition - myPosition);
-            transform.rotation = Quaternion.Lerp(transform.rotation, desiredRotation, Time.deltaTime * 6.0f);
+            var isGameOver = player.GetComponent<Gun>().isDead == true;
             
-            var gunDirection = Vector3.Angle(-playerDirection, end.transform.forward);   
-            
-            if (d2Player <= 10.0f) 
+            if (isGameOver) 
             {
-                if (gunShotTime <= 0) 
+                GetComponent<Animator>().SetBool("over", true);
+            }
+
+            if (gunShotTime >= 0.0f)
+            {
+                gunShotTime -= Time.deltaTime;
+            }
+
+            var playerPosition = player.transform.position;
+            var myPosition = transform.position;
+            
+            var d2Player = Vector3.Distance(playerPosition, myPosition);
+            var playerDirection = new Vector3((playerPosition.x - myPosition.x), (playerPosition.y - myPosition.y), (playerPosition.z - myPosition.z)).normalized;
+            var angleWithPlayer = Vector3.Angle(playerDirection, transform.forward);
+            
+            if (isPlayerDetected == false)
+            {
+                MoveOnPath(myPosition);
+            }
+
+            if (isPlayerDetected == false && d2Player < 15.0f && Math.Abs(angleWithPlayer) < 40.0f) {
+                isPlayerDetected = true;
+            }
+
+            if (isPlayerDetected && !isGameOver) 
+            {
+                var movePosition = new Vector3(playerPosition.x, myPosition.y, playerPosition.z);
+                var desiredRotation = Quaternion.LookRotation(movePosition - myPosition);
+                transform.rotation = Quaternion.Lerp(transform.rotation, desiredRotation, Time.deltaTime * 6.0f);
+                
+                var gunDirection = Vector3.Angle(-playerDirection, end.transform.forward);   
+                
+                if (d2Player <= 10.0f) 
                 {
-                    GetComponent<Animator>().SetBool("shoot", true);
-                    
-                    if (Math.Abs(gunDirection) <= 10.0f) 
+                    if (gunShotTime <= 0) 
                     {
-                        AddEffects();
-                        ShotDetection();
-                        gunShotTime = 0.4f;
+                        GetComponent<Animator>().SetBool("shoot", true);
+                        
+                        if (Math.Abs(gunDirection) <= 10.0f) 
+                        {
+                            AddEffects();
+                            ShotDetection();
+                            gunShotTime = 0.4f;
+                        }
                     }
+        
+                    GetComponent<Animator>().SetBool("run", false);
                 }
-    
-                GetComponent<Animator>().SetBool("run", false);
-            }
-            else
-            {
-                GetComponent<Animator>().SetBool("run", true);
-                GetComponent<Animator>().SetBool("shoot", false);
+                else
+                {
+                    GetComponent<Animator>().SetBool("run", true);
+                    GetComponent<Animator>().SetBool("shoot", false);
+                }
             }
         }
-        
     }
 
     void MoveOnPath(Vector3 myPosition)
@@ -114,10 +120,9 @@ public class Enemy : MonoBehaviour
 
         if (Physics.Raycast(rifleEnd, (rifleEnd - start.transform.position).normalized, out rayHit, 100.0f))
         {
-            if(rayHit.transform.tag == "Player")
+            if(rayHit.collider.tag == "Player")
             {
                 player.GetComponent<Gun>().Being_shot(20.0f);
-                // rayHit.transform.GetComponent<Gun>().Being_shot(20);
             }
             else
             {
@@ -125,6 +130,38 @@ public class Enemy : MonoBehaviour
                 Destroy(bulletHoleObject, 2.0f);
             }
             
+        }
+    }
+
+    public void Being_shot(float damage)
+    {
+        isPlayerDetected = true;
+        health -= damage;
+        
+        if (health <= 0)
+        {
+            isDead = true;
+        }
+
+        if (isDead == true)
+        {
+            GetComponent<Animator>().SetTrigger("isDead");
+            GetComponent<CharacterController>().enabled = false;
+
+            gun.GetComponent<Animator>().enabled = false;
+            gun.transform.parent = null;
+            var gunRigidBody = gun.AddComponent<Rigidbody>(); // Add the rigidbody.
+            
+            gunRigidBody.mass = 5; // Set the GO's mass to 5 via the Rigidbod
+            gunRigidBody.GetComponent<Rigidbody>().isKinematic = false;
+            gunRigidBody.GetComponent<Rigidbody>().detectCollisions = true;
+            gunRigidBody.GetComponent<Rigidbody>().useGravity = true;
+
+            var gunCollider = gun.AddComponent<CapsuleCollider>();
+            gunCollider.center = new Vector3(0, 0, 0.1f);
+            gunCollider.direction = 2;
+            gunCollider.height = 1;
+            gunCollider.radius = 0.2f;
         }
     }
 }
