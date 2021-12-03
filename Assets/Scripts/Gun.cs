@@ -108,9 +108,8 @@ public class Gun : MonoBehaviour {
         if (isDead == true)
         {
             GetComponent<Animator>().SetBool("dead", true);
-            // GetComponent<CharacterMovement>().isDead = true;
-            // GetComponent<CharacterController>().enabled = false;
-            //gameObject.transform.Find("Soldier_head").GetComponent<SkinnedMeshRenderer>().enabled = true;
+            GetComponent<CharacterMovement>().isDead = true;
+            GetComponent<CharacterController>().enabled = false;
             headMesh.GetComponent<SkinnedMeshRenderer>().enabled = true;
             Debug.Log("Game over");
         }

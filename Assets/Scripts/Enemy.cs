@@ -26,6 +26,12 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        var isGameOver = player.GetComponent<Gun>().isDead == true;
+        if (isGameOver) 
+        {
+            GetComponent<Animator>().SetBool("over", true);
+        }
+
         if (gunShotTime >= 0.0f)
         {
             gunShotTime -= Time.deltaTime;
@@ -43,24 +49,30 @@ public class Enemy : MonoBehaviour
             MoveOnPath(myPosition);
         }
 
-        if (isPlayerDetected == false && d2Player < 15.0f && Math.Abs(angleWithPlayer) < 30.0f) {
+        if (isPlayerDetected == false && d2Player < 15.0f && Math.Abs(angleWithPlayer) < 40.0f) {
             isPlayerDetected = true;
         }
 
-        if (isPlayerDetected) 
+        if (isPlayerDetected && !isGameOver) 
         {
             var movePosition = new Vector3(playerPosition.x, myPosition.y, playerPosition.z);
             var desiredRotation = Quaternion.LookRotation(movePosition - myPosition);
             transform.rotation = Quaternion.Lerp(transform.rotation, desiredRotation, Time.deltaTime * 6.0f);
             
+            var gunDirection = Vector3.Angle(-playerDirection, end.transform.forward);   
+            
             if (d2Player <= 10.0f) 
             {
                 if (gunShotTime <= 0) 
                 {
-                    AddEffects();
-                    ShotDetection();
                     GetComponent<Animator>().SetBool("shoot", true);
-                    gunShotTime = 0.4f;
+                    
+                    if (Math.Abs(gunDirection) <= 10.0f) 
+                    {
+                        AddEffects();
+                        ShotDetection();
+                        gunShotTime = 0.4f;
+                    }
                 }
     
                 GetComponent<Animator>().SetBool("run", false);
@@ -98,7 +110,7 @@ public class Enemy : MonoBehaviour
     void ShotDetection()
     {
         RaycastHit rayHit;
-        var rifleEnd = end.transform.position + (end.transform.up * UnityEngine.Random.Range(-0.2f, 0.2f)) + (end.transform.right * UnityEngine.Random.Range(-0.2f, 0.2f));
+        var rifleEnd = end.transform.position + (end.transform.forward * UnityEngine.Random.Range(-0.4f, 0.4f)) + (end.transform.right * UnityEngine.Random.Range(-0.4f, 0.4f));
 
         if (Physics.Raycast(rifleEnd, (rifleEnd - start.transform.position).normalized, out rayHit, 100.0f))
         {
