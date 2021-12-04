@@ -14,6 +14,7 @@ public class Enemy : MonoBehaviour
     public GameObject end;
     public GameObject bulletHole;
     public GameObject gun;
+    public GameObject head;
     private int targetIndex = 0;
     private bool isPlayerDetected = false;
     private float gunShotTime = 0.2f;
@@ -29,6 +30,7 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Debug.DrawRay(head.transform.position, head.transform.forward * 100.0f, Color.red, 10);
         if (!isDead) 
         {
             var isGameOver = player.GetComponent<Gun>().isDead == true;
@@ -54,6 +56,8 @@ public class Enemy : MonoBehaviour
             {
                 MoveOnPath(myPosition);
             }
+
+            // IsPlayerInVision(playerPosition, myPosition);
 
             if (isPlayerDetected == false && d2Player < 15.0f && Math.Abs(angleWithPlayer) < 40.0f) {
                 isPlayerDetected = true;
@@ -132,6 +136,22 @@ public class Enemy : MonoBehaviour
             
         }
     }
+
+    // bool IsPlayerInVision(Vector3 playerPosition, Vector3 myPosition)
+    // {
+    //     RaycastHit rayHit;
+    //     print(head.transform.forward * 100.0f);
+    //     int layerMask = 1<<8;
+    //     Debug.DrawRay(head.transform.position, head.transform.forward * 100.0f, Color.red);
+            
+    //     if (Physics.Raycast(head.transform.position, head.transform.TransformDirection(Vector3.forward), out rayHit, Mathf.Infinity, layerMask))
+    //     {
+    //         Debug.DrawRay(head.transform.position, head.transform.TransformDirection(Vector3.forward) * rayHit.distance, Color.yellow);
+    //         print("i see you");
+    //     }
+
+    //     return false;
+    // }
 
     public void Being_shot(float damage)
     {

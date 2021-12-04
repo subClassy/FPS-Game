@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 
 public class Gun : MonoBehaviour {
@@ -182,4 +183,18 @@ public class Gun : MonoBehaviour {
         Destroy(Instantiate(shotSound, transform.position, transform.rotation), 1.0f);
     }
 
+    void OnTriggerEnter(Collider collision)
+    {   
+        if (collision.gameObject.tag == "door")
+        {
+            print("Game won!");
+            Invoke("RestartGame", 10.0f);
+        }
+    }
+
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(0);
+        print("Game Restarted");
+    }
 }
