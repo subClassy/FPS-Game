@@ -9,7 +9,8 @@ using UnityEngine.SceneManagement;
 public class Gun : MonoBehaviour {
 
     public GameObject end, start; // The gun start and end point
-    public GameObject gun;
+    public GameObject gun_1;
+    public GameObject gun_2;
     public Animator animator;
     
     public GameObject spine;
@@ -44,6 +45,8 @@ public class Gun : MonoBehaviour {
     // Use this for initialization
     void Start() {
         headMesh.GetComponent<SkinnedMeshRenderer>().enabled = false; // Hiding player character head to avoid bugs :)
+        gun_1.gameObject.SetActive(false);
+        gun_2.gameObject.SetActive(true);
     }
 
     // Update is called once per frame
