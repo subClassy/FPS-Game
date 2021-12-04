@@ -185,6 +185,18 @@ public class Gun : MonoBehaviour {
 
     void OnTriggerEnter(Collider collision)
     {   
+        if(collision.gameObject.tag == "ammo")
+        {
+            var firstChild = collision.gameObject.transform.GetChild(0);
+            if (firstChild.tag == "shells" && firstChild.gameObject.activeSelf)
+            {
+                firstChild.gameObject.SetActive(!firstChild.gameObject.activeSelf);
+                
+                remainingBulletsVal = 90;
+                updateText();
+            }
+        }
+
         if (collision.gameObject.tag == "door")
         {
             print("Game won!");
