@@ -126,19 +126,19 @@ public class Enemy : MonoBehaviour
         {   
             if(rayHit.collider.tag == "head")
             {
-                player.GetComponent<Gun>().Being_shot(100.0f);
+                player.GetComponent<Gun>().Being_shot(80.0f);
             }
             else if(rayHit.collider.tag == "chest")
             {
-                player.GetComponent<Gun>().Being_shot(30.0f);
+                player.GetComponent<Gun>().Being_shot(20.0f);
             }
             else if(rayHit.collider.tag == "arm")
             {
-                player.GetComponent<Gun>().Being_shot(10.0f);
+                player.GetComponent<Gun>().Being_shot(5.0f);
             }
             else if(rayHit.collider.tag == "leg")
             {
-                player.GetComponent<Gun>().Being_shot(20.0f);
+                player.GetComponent<Gun>().Being_shot(15.0f);
             }
             else
             {
@@ -153,7 +153,7 @@ public class Enemy : MonoBehaviour
     {
         RaycastHit rayHit;
         Ray ray = new Ray(myPosition, playerPosition - myPosition);
-        
+
         if(Physics.Raycast(ray, out rayHit, 100.0f))
         {
             if(rayHit.transform.name == "player")
