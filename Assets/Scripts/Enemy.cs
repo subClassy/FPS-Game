@@ -57,7 +57,7 @@ public class Enemy : MonoBehaviour
                 MoveOnPath(myPosition);
             }
 
-            // IsPlayerInVision(playerPosition, myPosition);
+            IsPlayerInVision(playerPosition, myPosition);
 
             if (isPlayerDetected == false && d2Player < 15.0f && Math.Abs(angleWithPlayer) < 40.0f) {
                 isPlayerDetected = true;
@@ -122,7 +122,7 @@ public class Enemy : MonoBehaviour
         RaycastHit rayHit;
         var rifleEnd = end.transform.position + (end.transform.forward * UnityEngine.Random.Range(-0.4f, 0.4f)) + (end.transform.right * UnityEngine.Random.Range(-0.4f, 0.4f));
 
-        if (Physics.Raycast(rifleEnd, (rifleEnd - start.transform.position).normalized, out rayHit, 100.0f))
+        if (Physics.Raycast(rifleEnd, (rifleEnd - start.transform.position).normalized, out rayHit, 10.0f))
         {   
             if(rayHit.collider.tag == "head")
             {
@@ -149,51 +149,54 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    // bool IsPlayerInVision(Vector3 playerPosition, Vector3 myPosition)
-    // {
-    //     RaycastHit rayHit;
-    //     print(head.transform.forward * 100.0f);
-    //     int layerMask = 1<<8;
-    //     Debug.DrawRay(head.transform.position, head.transform.forward * 100.0f, Color.red);
-            
-    //     if (Physics.Raycast(head.transform.position, head.transform.TransformDirection(Vector3.forward), out rayHit, Mathf.Infinity, layerMask))
-    //     {
-    //         Debug.DrawRay(head.transform.position, head.transform.TransformDirection(Vector3.forward) * rayHit.distance, Color.yellow);
-    //         print("i see you");
-    //     }
-
-    //     return false;
-    // }
+    public bool IsPlayerInVision(Vector3 playerPosition, Vector3 myPosition)
+    {
+        RaycastHit rayHit;
+        Ray ray = new Ray(myPosition, playerPosition - myPosition);
+        
+        if(Physics.Raycast(ray, out rayHit, 100.0f))
+        {
+            if(rayHit.transform.name == "player")
+            {
+                return true;
+            }
+        }
+        
+        return false;
+    }
 
     public void Being_shot(float damage)
     {
-        isPlayerDetected = true;
-        health -= damage;
-        
-        if (health <= 0)
+        if (!isDead)
         {
-            isDead = true;
-        }
-
-        if (isDead == true)
-        {
-            GetComponent<Animator>().SetTrigger("isDead");
-            GetComponent<CharacterController>().enabled = false;
-
-            gun.GetComponent<Animator>().enabled = false;
-            gun.transform.parent = null;
-            var gunRigidBody = gun.AddComponent<Rigidbody>(); // Add the rigidbody.
+            isPlayerDetected = true;
+            health -= damage;
             
-            gunRigidBody.mass = 5; // Set the GO's mass to 5 via the Rigidbod
-            gunRigidBody.GetComponent<Rigidbody>().isKinematic = false;
-            gunRigidBody.GetComponent<Rigidbody>().detectCollisions = true;
-            gunRigidBody.GetComponent<Rigidbody>().useGravity = true;
+            if (health <= 0)
+            {
+                isDead = true;
+            }
 
-            var gunCollider = gun.AddComponent<CapsuleCollider>();
-            gunCollider.center = new Vector3(0, 0, 0.1f);
-            gunCollider.direction = 2;
-            gunCollider.height = 1;
-            gunCollider.radius = 0.2f;
+            if (isDead == true)
+            {
+                GetComponent<Animator>().SetTrigger("isDead");
+                GetComponent<CharacterController>().enabled = false;
+
+                gun.GetComponent<Animator>().enabled = false;
+                gun.transform.parent = null;
+                var gunRigidBody = gun.AddComponent<Rigidbody>(); // Add the rigidbody.
+                
+                gunRigidBody.mass = 5; // Set the GO's mass to 5 via the Rigidbod
+                gunRigidBody.GetComponent<Rigidbody>().isKinematic = false;
+                gunRigidBody.GetComponent<Rigidbody>().detectCollisions = true;
+                gunRigidBody.GetComponent<Rigidbody>().useGravity = true;
+
+                var gunCollider = gun.AddComponent<CapsuleCollider>();
+                gunCollider.center = new Vector3(0, 0, 0.1f);
+                gunCollider.direction = 2;
+                gunCollider.height = 1;
+                gunCollider.radius = 0.2f;
+            }
         }
     }
 }
