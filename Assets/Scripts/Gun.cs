@@ -20,7 +20,6 @@ public class Gun : MonoBehaviour {
 
     float gunShotTime = 0.1f;
     float gunReloadTime = 1.0f;
-    
     float gunChangeTime = 1.0f;
     Quaternion previousRotation;
     public float health = 100;
@@ -29,20 +28,21 @@ public class Gun : MonoBehaviour {
     public Text currentHealth;
     public Text maxHealth;
     public bool isDead;
- 
-
     public Text magBullets;
     public Text remainingBullets;
-
     int magBulletsVal = 30;
     int remainingBulletsVal = 90;
+    int gun2magBulletsVal = 2;
+    int gun2remainingBulletsVal = 12;
+    int curMagBulletsVal = 30;
+    int curRemainingBulletsVal = 90;
     int magSize = 30;
+    int gun2MagSize = 2;
+    int curMagSize = 30;
     public GameObject headMesh;
     public static bool leftHanded { get; private set; }
-
     public GameObject bulletHole;
     public GameObject muzzleFlash;
-
     public GameObject shotSound;
 
     // Use this for initialization
@@ -54,6 +54,19 @@ public class Gun : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+        
+        if (gun_1.gameObject.activeSelf) 
+        {
+            curMagBulletsVal = magBulletsVal;
+            curRemainingBulletsVal = remainingBulletsVal;
+            curMagSize = magSize;
+        }
+        else 
+        {
+            curMagBulletsVal = gun2magBulletsVal;
+            curRemainingBulletsVal = gun2remainingBulletsVal;
+            curMagSize = gun2MagSize;
+        }
         
         // Cool down times
         if (gunShotTime >= 0.0f)
@@ -70,7 +83,7 @@ public class Gun : MonoBehaviour {
         }
 
 
-        if ((Input.GetMouseButtonDown(0) || Input.GetMouseButton(0)) && gunShotTime <= 0 && gunReloadTime <= 0.0f && magBulletsVal > 0 && !isDead)
+        if ((Input.GetMouseButtonDown(0) || Input.GetMouseButton(0)) && gunShotTime <= 0 && gunReloadTime <= 0.0f && curMagBulletsVal > 0 && !isDead)
         { 
             shotDetection(); // Should be completed
 
@@ -81,8 +94,8 @@ public class Gun : MonoBehaviour {
             
             // Instantiating the muzzle prefab and shot sound
             
-            magBulletsVal = magBulletsVal - 1;
-            if (magBulletsVal <= 0 && remainingBulletsVal > 0)
+            curMagBulletsVal = curMagBulletsVal - 1;
+            if (curMagBulletsVal <= 0 && curRemainingBulletsVal > 0)
             {
                 animator.SetBool("reloadAfterFire", true);
                 gunReloadTime = 2.5f;
@@ -94,7 +107,7 @@ public class Gun : MonoBehaviour {
             animator.SetBool("fire", false);
         }
 
-        if ((Input.GetKeyDown(KeyCode.R) || Input.GetKeyDown(KeyCode.R)) && gunReloadTime <= 0.0f && gunShotTime <= 0.1f && remainingBulletsVal > 0 && magBulletsVal < magSize && !isDead )
+        if ((Input.GetKeyDown(KeyCode.R) || Input.GetKeyDown(KeyCode.R)) && gunReloadTime <= 0.0f && gunShotTime <= 0.1f && curRemainingBulletsVal > 0 && curMagBulletsVal < curMagSize && !isDead )
         {
             animator.SetBool("reload", true);
             gunReloadTime = 2.5f;
@@ -111,23 +124,33 @@ public class Gun : MonoBehaviour {
             gun_1.gameObject.SetActive(!gun_1.gameObject.activeSelf);
             gun_2.gameObject.SetActive(!gun_2.gameObject.activeSelf);
 
-            // if (gun_1.gameObject.activeSelf) 
-            // {
-            //     curMagBulletsVal = magBulletsVal;
-            //     curRemainingBulletsVal = remainingBulletsVal;
-            //     curMagSize = magSize;
-            // }
-            // else 
-            // {
-            //     curMagBulletsVal = gun2magBulletsVal;
-            //     curRemainingBulletsVal = gun2remainingBulletsVal;
-            //     curMagSize = gun2MagSize;
-            // }
+            if (gun_1.gameObject.activeSelf) 
+            {
+                curMagBulletsVal = magBulletsVal;
+                curRemainingBulletsVal = remainingBulletsVal;
+                curMagSize = magSize;
+            }
+            else 
+            {
+                curMagBulletsVal = gun2magBulletsVal;
+                curRemainingBulletsVal = gun2remainingBulletsVal;
+                curMagSize = gun2MagSize;
+            }
         }
 
         updateText();
         updateHealthText();
        
+        if (gun_1.gameObject.activeSelf) 
+        {
+            magBulletsVal = curMagBulletsVal;
+            remainingBulletsVal = curRemainingBulletsVal;
+        }
+        else 
+        {
+            gun2magBulletsVal = curMagBulletsVal;
+            gun2remainingBulletsVal = curRemainingBulletsVal;
+        }
     }
 
   
@@ -178,17 +201,28 @@ public class Gun : MonoBehaviour {
 
     void reloaded()
     {
-        int newMagBulletsVal = Mathf.Min(remainingBulletsVal + magBulletsVal, magSize);
-        int addedBullets = newMagBulletsVal - magBulletsVal;
-        magBulletsVal = newMagBulletsVal;
-        remainingBulletsVal = Mathf.Max(0, remainingBulletsVal - addedBullets);
+        int newMagBulletsVal = Mathf.Min(curRemainingBulletsVal + curMagBulletsVal, curMagSize);
+        int addedBullets = newMagBulletsVal - curMagBulletsVal;
+        curMagBulletsVal = newMagBulletsVal;
+        curRemainingBulletsVal = Mathf.Max(0, curRemainingBulletsVal - addedBullets);
         animator.SetBool("reloadAfterFire", false);
+
+        if (gun_1.gameObject.activeSelf) 
+        {
+            magBulletsVal = curMagBulletsVal;
+            remainingBulletsVal = curRemainingBulletsVal;
+        }
+        else 
+        {
+            gun2magBulletsVal = curMagBulletsVal;
+            gun2remainingBulletsVal = curRemainingBulletsVal;
+        }
     }
 
     void updateText()
     {
-        magBullets.text = magBulletsVal.ToString() ;
-        remainingBullets.text = remainingBulletsVal.ToString();
+        magBullets.text = curMagBulletsVal.ToString() ;
+        remainingBullets.text = curRemainingBulletsVal.ToString();
     }
 
     void updateHealthText()
@@ -234,6 +268,7 @@ public class Gun : MonoBehaviour {
                 firstChild.gameObject.SetActive(!firstChild.gameObject.activeSelf);
                 
                 remainingBulletsVal = 90;
+                gun2remainingBulletsVal = 12;
                 updateText();
             }
         }
