@@ -16,9 +16,12 @@ public class Gun : MonoBehaviour {
     public GameObject spine;
     public GameObject handMag;
     public GameObject gunMag;
+    public GameObject gun2Mag;
 
     float gunShotTime = 0.1f;
     float gunReloadTime = 1.0f;
+    
+    float gunChangeTime = 1.0f;
     Quaternion previousRotation;
     public float health = 100;
     public float initialHealth = 100;
@@ -45,8 +48,8 @@ public class Gun : MonoBehaviour {
     // Use this for initialization
     void Start() {
         headMesh.GetComponent<SkinnedMeshRenderer>().enabled = false; // Hiding player character head to avoid bugs :)
-        gun_1.gameObject.SetActive(false);
-        gun_2.gameObject.SetActive(true);
+        gun_1.gameObject.SetActive(true);
+        gun_2.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -60,6 +63,10 @@ public class Gun : MonoBehaviour {
         if (gunReloadTime >= 0.0f)
         {
             gunReloadTime -= Time.deltaTime;
+        }
+        if (gunChangeTime >= 0.0f)
+        {
+            gunChangeTime -= Time.deltaTime;
         }
 
 
@@ -98,6 +105,26 @@ public class Gun : MonoBehaviour {
             animator.SetBool("reload", false);
         }
 
+        if ((Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.Q)) && gunChangeTime <= 0.0f && !isDead )
+        {
+            gunChangeTime = 2.5f;
+            gun_1.gameObject.SetActive(!gun_1.gameObject.activeSelf);
+            gun_2.gameObject.SetActive(!gun_2.gameObject.activeSelf);
+
+            // if (gun_1.gameObject.activeSelf) 
+            // {
+            //     curMagBulletsVal = magBulletsVal;
+            //     curRemainingBulletsVal = remainingBulletsVal;
+            //     curMagSize = magSize;
+            // }
+            // else 
+            // {
+            //     curMagBulletsVal = gun2magBulletsVal;
+            //     curRemainingBulletsVal = gun2remainingBulletsVal;
+            //     curMagSize = gun2MagSize;
+            // }
+        }
+
         updateText();
         updateHealthText();
        
@@ -125,16 +152,27 @@ public class Gun : MonoBehaviour {
 
     public void ReloadEvent(int eventNumber) // appearing and disappearing the handMag and gunMag
     {
+        GameObject cMag;
+
+        if (gun_1.gameObject.activeSelf) 
+        {
+            cMag = gunMag;
+        }
+        else 
+        {
+            cMag = gun2Mag;
+        }
+
         if (eventNumber == 1) 
         {
             handMag.GetComponent<SkinnedMeshRenderer>().enabled = true;
-            gunMag.GetComponent<SkinnedMeshRenderer>().enabled = false;
+            cMag.GetComponent<SkinnedMeshRenderer>().enabled = false;
         }
         
         if (eventNumber == 2) 
         {
             handMag.GetComponent<SkinnedMeshRenderer>().enabled = false;
-            gunMag.GetComponent<SkinnedMeshRenderer>().enabled = true;
+            cMag.GetComponent<SkinnedMeshRenderer>().enabled = true;
         }
     }
 

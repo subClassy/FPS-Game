@@ -13161,7 +13161,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 85.092
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4802733149997192230, guid: 8e0f61ec484e3004297efb240df69af4, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 8e0f61ec484e3004297efb240df69af4, type: 3}
 --- !u!4 &1497550173 stripped
 Transform:
@@ -18235,6 +18236,64 @@ Transform:
   m_Father: {fileID: 1986521331}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2029741055 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5893145955331094055, guid: 8e0f61ec484e3004297efb240df69af4,
+    type: 3}
+  m_PrefabInstance: {fileID: 1497550172}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &2029741056
+SkinnedMeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2029741055}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 3
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 2e807d1361e8acf40bc70309fc7eb6c9, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  serializedVersion: 2
+  m_Quality: 0
+  m_UpdateWhenOffscreen: 0
+  m_SkinnedMotionVectors: 1
+  m_Mesh: {fileID: 4493585093827132993, guid: 84f147ffc11935c43a8338e7207459a8, type: 3}
+  m_Bones: []
+  m_BlendShapeWeights: []
+  m_RootBone: {fileID: 0}
+  m_AABB:
+    m_Center: {x: 0, y: 0.1199644, z: -0.017329033}
+    m_Extent: {x: 0.0057811043, y: 0.015692182, z: 0.019788288}
+  m_DirtyAABB: 0
 --- !u!1 &2036161836
 GameObject:
   m_ObjectHideFlags: 0
@@ -21867,6 +21926,7 @@ MonoBehaviour:
   spine: {fileID: 3068975126544887885}
   handMag: {fileID: 40919614}
   gunMag: {fileID: 2052444543}
+  gun2Mag: {fileID: 2029741055}
   health: 100
   initialHealth: 100
   currentHealth: {fileID: 290274214}
