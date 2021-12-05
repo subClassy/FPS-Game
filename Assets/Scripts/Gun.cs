@@ -234,17 +234,34 @@ public class Gun : MonoBehaviour {
     void shotDetection() // Detecting the object which player shot 
     {
         RaycastHit rayHit;
-        
-        if (Physics.Raycast(end.transform.position, (end.transform.position - start.transform.position).normalized, out rayHit, 100.0f))
+        if (gun_1.gameObject.activeSelf) 
         {
-            if (rayHit.collider.tag == "Player")
+            if (Physics.Raycast(end.transform.position, (end.transform.position - start.transform.position).normalized, out rayHit, 15.0f))
             {
-                rayHit.transform.gameObject.GetComponent<Enemy>().Being_shot(20.0f);
+                if (rayHit.collider.tag == "Player")
+                {
+                    rayHit.transform.gameObject.GetComponent<Enemy>().Being_shot(20.0f);
+                }
+                else
+                {
+                    GameObject bulletHoleObject = Instantiate(bulletHole, rayHit.point + rayHit.collider.transform.up * 0.01f, rayHit.collider.transform.rotation);
+                    Destroy(bulletHoleObject, 2.0f);
+                }
             }
-            else
+        }
+        else 
+        {
+            if (Physics.Raycast(end.transform.position, (end.transform.position - start.transform.position).normalized, out rayHit, 5.0f))
             {
-                GameObject bulletHoleObject = Instantiate(bulletHole, rayHit.point + rayHit.collider.transform.up * 0.01f, rayHit.collider.transform.rotation);
-                Destroy(bulletHoleObject, 2.0f);
+                if (rayHit.collider.tag == "Player")
+                {
+                    rayHit.transform.gameObject.GetComponent<Enemy>().Being_shot(50.0f);
+                }
+                else
+                {
+                    GameObject bulletHoleObject = Instantiate(bulletHole, rayHit.point + rayHit.collider.transform.up * 0.01f, rayHit.collider.transform.rotation);
+                    Destroy(bulletHoleObject, 2.0f);
+                }
             }
         }
     }
