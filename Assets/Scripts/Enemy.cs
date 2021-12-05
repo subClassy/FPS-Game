@@ -123,8 +123,20 @@ public class Enemy : MonoBehaviour
         var rifleEnd = end.transform.position + (end.transform.forward * UnityEngine.Random.Range(-0.4f, 0.4f)) + (end.transform.right * UnityEngine.Random.Range(-0.4f, 0.4f));
 
         if (Physics.Raycast(rifleEnd, (rifleEnd - start.transform.position).normalized, out rayHit, 100.0f))
-        {
-            if(rayHit.collider.tag == "Player")
+        {   
+            if(rayHit.collider.tag == "head")
+            {
+                player.GetComponent<Gun>().Being_shot(100.0f);
+            }
+            else if(rayHit.collider.tag == "chest")
+            {
+                player.GetComponent<Gun>().Being_shot(30.0f);
+            }
+            else if(rayHit.collider.tag == "arm")
+            {
+                player.GetComponent<Gun>().Being_shot(10.0f);
+            }
+            else if(rayHit.collider.tag == "leg")
             {
                 player.GetComponent<Gun>().Being_shot(20.0f);
             }

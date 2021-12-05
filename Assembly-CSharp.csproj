@@ -87,6 +87,7 @@
      <Compile Include="Assets\Oculus\VR\Scripts\OVRDisplay.cs" />
      <Compile Include="Assets\Oculus\VR\Scripts\Composition\OVRComposition.cs" />
      <Compile Include="Assets\Oculus\VR\Scripts\OVRPlugin.cs" />
+     <Compile Include="Assets\Scripts\BodyPartHit.cs" />
      <None Include="Assets\Oculus\VR\Resources\Texture2D Blit.shader" />
      <None Include="Assets\Oculus\VR\Shaders\Unlit Crosshair.shader" />
      <None Include="Assets\Oculus\VR\Resources\Cubemap Blit.shader" />

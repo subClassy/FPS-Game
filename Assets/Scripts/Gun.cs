@@ -42,6 +42,7 @@ public class Gun : MonoBehaviour {
     public GameObject headMesh;
     public static bool leftHanded { get; private set; }
     public GameObject bulletHole;
+    public GameObject bloodStream;
     public GameObject muzzleFlash;
     public GameObject shotSound;
 
@@ -228,7 +229,8 @@ public class Gun : MonoBehaviour {
     void updateHealthText()
     {
         maxHealth.text = initialHealth.ToString();
-        currentHealth.text = health.ToString();
+        var textHealth = Mathf.Max(0, health);
+        currentHealth.text = textHealth.ToString();
     }
 
     void shotDetection() // Detecting the object which player shot 
@@ -238,9 +240,33 @@ public class Gun : MonoBehaviour {
         {
             if (Physics.Raycast(end.transform.position, (end.transform.position - start.transform.position).normalized, out rayHit, 15.0f))
             {
-                if (rayHit.collider.tag == "Player")
+                if(rayHit.collider.tag == "head")
                 {
-                    rayHit.transform.gameObject.GetComponent<Enemy>().Being_shot(20.0f);
+                    rayHit.transform.GetComponent<BodyPartHit>().BodyHit(100.0f);
+                    GameObject bloodObject = Instantiate(bloodStream, rayHit.point + rayHit.collider.transform.up * 0.01f, rayHit.collider.transform.rotation);
+                    bloodObject.GetComponent<ParticleSystem>().Play();
+                    Destroy(bloodObject, 1.0f);
+                }
+                else if(rayHit.collider.tag == "chest")
+                {
+                    rayHit.transform.GetComponent<BodyPartHit>().BodyHit(30.0f);
+                    GameObject bloodObject = Instantiate(bloodStream, rayHit.point + rayHit.collider.transform.up * 0.01f, rayHit.collider.transform.rotation);
+                    bloodObject.GetComponent<ParticleSystem>().Play();
+                    Destroy(bloodObject, 1.0f);
+                }
+                else if(rayHit.collider.tag == "arm")
+                {
+                    rayHit.transform.GetComponent<BodyPartHit>().BodyHit(10.0f);
+                    GameObject bloodObject = Instantiate(bloodStream, rayHit.point + rayHit.collider.transform.up * 0.01f, rayHit.collider.transform.rotation);
+                    bloodObject.GetComponent<ParticleSystem>().Play();
+                    Destroy(bloodObject, 1.0f);
+                }
+                else if(rayHit.collider.tag == "leg")
+                {
+                    rayHit.transform.GetComponent<BodyPartHit>().BodyHit(20.0f);
+                    GameObject bloodObject = Instantiate(bloodStream, rayHit.point + rayHit.collider.transform.up * 0.01f, rayHit.collider.transform.rotation);
+                    bloodObject.GetComponent<ParticleSystem>().Play();
+                    Destroy(bloodObject, 1.0f);
                 }
                 else
                 {
@@ -253,9 +279,33 @@ public class Gun : MonoBehaviour {
         {
             if (Physics.Raycast(end.transform.position, (end.transform.position - start.transform.position).normalized, out rayHit, 5.0f))
             {
-                if (rayHit.collider.tag == "Player")
+                if(rayHit.collider.tag == "head")
                 {
-                    rayHit.transform.gameObject.GetComponent<Enemy>().Being_shot(50.0f);
+                    rayHit.transform.GetComponent<BodyPartHit>().BodyHit(100.0f);
+                    GameObject bloodObject = Instantiate(bloodStream, rayHit.point + rayHit.collider.transform.up * 0.01f, rayHit.collider.transform.rotation);
+                    bloodObject.GetComponent<ParticleSystem>().Play();
+                    Destroy(bloodObject, 1.0f);
+                }
+                else if(rayHit.collider.tag == "chest")
+                {
+                    rayHit.transform.GetComponent<BodyPartHit>().BodyHit(60.0f);
+                    GameObject bloodObject = Instantiate(bloodStream, rayHit.point + rayHit.collider.transform.up * 0.01f, rayHit.collider.transform.rotation);
+                    bloodObject.GetComponent<ParticleSystem>().Play();
+                    Destroy(bloodObject, 1.0f);
+                }
+                else if(rayHit.collider.tag == "arm")
+                {
+                    rayHit.transform.GetComponent<BodyPartHit>().BodyHit(20.0f);
+                    GameObject bloodObject = Instantiate(bloodStream, rayHit.point + rayHit.collider.transform.up * 0.01f, rayHit.collider.transform.rotation);
+                    bloodObject.GetComponent<ParticleSystem>().Play();
+                    Destroy(bloodObject, 1.0f);
+                }
+                else if(rayHit.collider.tag == "leg")
+                {
+                    rayHit.transform.GetComponent<BodyPartHit>().BodyHit(40.0f);
+                    GameObject bloodObject = Instantiate(bloodStream, rayHit.point + rayHit.collider.transform.up * 0.01f, rayHit.collider.transform.rotation);
+                    bloodObject.GetComponent<ParticleSystem>().Play();
+                    Destroy(bloodObject, 1.0f);
                 }
                 else
                 {
