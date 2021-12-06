@@ -57,9 +57,7 @@ public class Enemy : MonoBehaviour
                 MoveOnPath(myPosition);
             }
 
-            IsPlayerInVision(playerPosition, myPosition);
-
-            if (isPlayerDetected == false && d2Player < 15.0f && Math.Abs(angleWithPlayer) < 40.0f) {
+            if (isPlayerDetected == false && d2Player < 15.0f && Math.Abs(angleWithPlayer) < 40.0f && IsPlayerInVision(playerPosition, myPosition)) {
                 isPlayerDetected = true;
             }
 
@@ -152,10 +150,11 @@ public class Enemy : MonoBehaviour
     public bool IsPlayerInVision(Vector3 playerPosition, Vector3 myPosition)
     {
         RaycastHit rayHit;
-        Ray ray = new Ray(myPosition, playerPosition - myPosition);
+        Ray ray = new Ray(myPosition + new Vector3(0, 2, 0), playerPosition - myPosition);
 
         if(Physics.Raycast(ray, out rayHit, 100.0f))
         {
+            print(transform.name + " " + rayHit.transform.name);
             if(rayHit.transform.name == "player")
             {
                 return true;
