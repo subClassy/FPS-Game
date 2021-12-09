@@ -79,7 +79,7 @@ public class Enemy : MonoBehaviour
                         {
                             AddEffects();
                             ShotDetection();
-                            gunShotTime = 0.4f;
+                            gunShotTime = 0.2f;
                         }
                     }
         
@@ -118,7 +118,7 @@ public class Enemy : MonoBehaviour
     void ShotDetection()
     {
         RaycastHit rayHit;
-        var rifleEnd = end.transform.position + (end.transform.forward * UnityEngine.Random.Range(-0.4f, 0.4f)) + (end.transform.right * UnityEngine.Random.Range(-0.4f, 0.4f));
+        var rifleEnd = end.transform.position + (end.transform.forward * UnityEngine.Random.Range(-1f, 1f)) + (end.transform.right * UnityEngine.Random.Range(-1f, 1f));
 
         if (Physics.Raycast(rifleEnd, (rifleEnd - start.transform.position).normalized, out rayHit, 10.0f))
         {   
@@ -150,11 +150,10 @@ public class Enemy : MonoBehaviour
     public bool IsPlayerInVision(Vector3 playerPosition, Vector3 myPosition)
     {
         RaycastHit rayHit;
-        Ray ray = new Ray(myPosition + new Vector3(0, 2, 0), playerPosition - myPosition);
+        Ray ray = new Ray(myPosition + new Vector3(0, 1, 0), playerPosition - myPosition);
 
         if(Physics.Raycast(ray, out rayHit, 100.0f))
-        {
-            print(transform.name + " " + rayHit.transform.name);
+        {   
             if(rayHit.transform.name == "player")
             {
                 return true;

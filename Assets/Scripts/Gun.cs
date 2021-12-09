@@ -30,6 +30,7 @@ public class Gun : MonoBehaviour {
     public bool isDead;
     public Text magBullets;
     public Text remainingBullets;
+    public Text gameInfo;
     int magBulletsVal = 30;
     int remainingBulletsVal = 90;
     int gun2magBulletsVal = 2;
@@ -121,10 +122,10 @@ public class Gun : MonoBehaviour {
 
         if ((Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.Q)) && gunChangeTime <= 0.0f && !isDead )
         {
+            animator.SetBool("gunSwitch", true);
             gunChangeTime = 2.5f;
-            gun_1.gameObject.SetActive(!gun_1.gameObject.activeSelf);
-            gun_2.gameObject.SetActive(!gun_2.gameObject.activeSelf);
-
+            Invoke("SwitchGuns", 2.0f);
+            
             if (gun_1.gameObject.activeSelf) 
             {
                 curMagBulletsVal = magBulletsVal;
@@ -137,6 +138,10 @@ public class Gun : MonoBehaviour {
                 curRemainingBulletsVal = gun2remainingBulletsVal;
                 curMagSize = gun2MagSize;
             }
+        }
+        else
+        {
+            animator.SetBool("gunSwitch", false);
         }
 
         updateText();
@@ -154,7 +159,11 @@ public class Gun : MonoBehaviour {
         }
     }
 
-  
+    public void SwitchGuns()
+    {
+        gun_1.gameObject.SetActive(!gun_1.gameObject.activeSelf);
+        gun_2.gameObject.SetActive(!gun_2.gameObject.activeSelf);
+    }
 
     public void Being_shot(float damage) // getting hit from enemy
     {
@@ -167,6 +176,7 @@ public class Gun : MonoBehaviour {
 
         if (isDead == true)
         {
+            updateGameInfo("You Died!");
             GetComponent<Animator>().SetBool("dead", true);
             GetComponent<CharacterMovement>().isDead = true;
             GetComponent<CharacterController>().enabled = false;
@@ -231,6 +241,11 @@ public class Gun : MonoBehaviour {
         maxHealth.text = initialHealth.ToString();
         var textHealth = Mathf.Max(0, health);
         currentHealth.text = textHealth.ToString();
+    }
+
+    void updateGameInfo(string text)
+    {
+        gameInfo.text = text;
     }
 
     void shotDetection() // Detecting the object which player shot 
@@ -343,6 +358,7 @@ public class Gun : MonoBehaviour {
         if (collision.gameObject.tag == "door")
         {
             print("Game won!");
+            updateGameInfo("You Win!!");
             Invoke("RestartGame", 10.0f);
         }
     }
